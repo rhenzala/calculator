@@ -30,6 +30,7 @@ ops.forEach(btn => {
     })
 }) 
 period.addEventListener('click', appendPeriod);
+window.addEventListener('keydown', getKeyboardInput)
 
 
 function appendNumber(num){
@@ -38,7 +39,7 @@ function appendNumber(num){
         currentValue = currentDisplay.textContent;
     } 
 }
-
+// should prevent the user from putting a point on the number more than once
 function appendPeriod(){
     if (currentDisplay.textContent.includes('.')) return;
     currentDisplay.textContent += '.';
@@ -63,7 +64,7 @@ function displayResult(){
         currentDisplay.textContent = previousValue;
     }
     else{
-        currentDisplay.textContent = `${previousValue.slice(0, 11)}...`
+        currentDisplay.textContent = `${Number(previousValue).toExponential(5)}` // up to five digit after the decimal point
     }
 }
 
@@ -71,6 +72,7 @@ function roundNumber(num){
     return Math.round(num * 1000)/1000;
 }
 
+// this should assign the numbers on the bottom screen just before the operator is displayed as the first operand (previousValue)
 function selectOperator(op){
     previousValue = currentDisplay.textContent;
     operator = op;
@@ -78,6 +80,23 @@ function selectOperator(op){
     currentValue = '';
     currentDisplay.textContent = currentValue;
 }
+
+function getKeyboardInput(e) {
+    if (e.key >= 0 && e.key <= 9) appendNumber(e.key)
+    if (e.key === '.') appendPeriod()
+    if (e.key === '=' || e.key === 'Enter') operate()
+    if (e.key === 'Backspace') deleteValue()
+    if (e.key === 'Escape') clearDisplay()
+    if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/')
+      selectOperator(convertOperator(e.key))
+  }
+  
+function convertOperator(keyboardOperator) {
+    if (keyboardOperator === '/') return '÷'
+    if (keyboardOperator === '*') return '×'
+    if (keyboardOperator === '-') return '-'
+    if (keyboardOperator === '+') return '+'
+  }
 
 function operate(){
     previousValue = Number(previousValue);
