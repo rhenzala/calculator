@@ -40,16 +40,17 @@ body{
     height: 50%;
 }
 
-.first-row,
-.second-row,
-.third-row,
-.fourth-row,
-.last-row{
+.keys{
     display: flex;
-    gap: 5px;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+#clear,
+#delete{
+    width: 40%;
 }
 button{
     width: 20%;
-    height: 40px;
+    height: 8vh;
     flex: auto;
 }
