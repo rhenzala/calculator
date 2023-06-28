@@ -1,6 +1,6 @@
 let currentValue = '';
 let previousValue = '';
-let operator = '';
+let operator = null;
 
 const numbers = document.querySelectorAll(".num");
 const ops = document.querySelectorAll(".ops");
@@ -13,55 +13,80 @@ const previousDisplay = document.getElementById("prev");
 const currentDisplay = document.getElementById("current");
 
 clear.addEventListener('click', clearDisplay)
+del.addEventListener('click', deleteValue)
 equals.addEventListener('click', () => {
-    operate();
-    previousDisplay.textContent = '';
-    currentDisplay.textContent = previousValue;
+    if (currentValue != '' && previousValue != ''){
+        operate();
+    }
 })
 numbers.forEach(btn => {
     btn.addEventListener('click', (e) =>{
-        getOperand(e.target.textContent);
-        currentDisplay.textContent = currentValue;
-        //updateDisplay();
+        appendNumber(e.target.textContent);
     })
 })
 ops.forEach(btn => {
     btn.addEventListener('click', (e) => {
-        selectOperator(e.target.textContent);
-        previousDisplay.textContent = `${previousValue} ${operator}`;
-        currentDisplay.textContent = currentValue;
+        selectOperator(e.target.textContent);        
     })
 }) 
+period.addEventListener('click', appendPeriod);
 
-function updateDisplay(){
-    let x = this.innerText
-    currentDisplay.textContent += x
-    
-}
 
-function selectOperator(op){
-    operator = op;
-    previousValue = currentValue;
-    currentValue = '';
-}
-
-function getOperand(num){
-    if (currentValue.length <= 14){
-        currentValue += num;
+function appendNumber(num){
+    if (currentValue.length <= 9){
+        currentDisplay.textContent += num;
+        currentValue = currentDisplay.textContent;
     } 
+}
+
+function appendPeriod(){
+    if (currentDisplay.textContent.includes('.')) return;
+    currentDisplay.textContent += '.';
 }
 
 function clearDisplay(){
     currentValue = '';
     previousValue = '';
-    operator = '';
+    operator = null;
     previousDisplay.textContent = '';
     currentDisplay.textContent = '';
+}
+
+function deleteValue(){
+    currentDisplay.textContent = currentDisplay.textContent.toString().slice(0, -1)
+}
+
+function displayResult(){
+    previousDisplay.textContent = '';
+    operator = null;
+    if (previousValue.length <= 9){
+        currentDisplay.textContent = previousValue;
+    }
+    else{
+        currentDisplay.textContent = `${previousValue.slice(0, 11)}...`
+    }
+}
+
+function roundNumber(num){
+    return Math.round(num * 1000)/1000;
+}
+
+function selectOperator(op){
+    previousValue = currentDisplay.textContent;
+    operator = op;
+    previousDisplay.textContent = `${previousValue} ${operator}`;
+    currentValue = '';
+    currentDisplay.textContent = currentValue;
 }
 
 function operate(){
     previousValue = Number(previousValue);
     currentValue = Number(currentValue);
+
+    if (operator === '÷' && currentValue === 0) {
+        currentDisplay.textContent = "RETARD";
+        previousDisplay.textContent = '';
+    }
 
     switch (operator){
         case '+':
@@ -74,24 +99,21 @@ function operate(){
             previousValue = multiply(previousValue, currentValue);
             break;
         case '÷':
-            previousValue = divide(previousValue, currentValue);
+            if (currentValue === 0) return null;
+            else previousValue = divide(previousValue, currentValue);
             break;
+        default:
+            return null
     }
 
     previousValue = roundNumber(previousValue);
     previousValue = previousValue.toString();
     currentValue = currentValue.toString();
+    displayResult();
 }
-
-function roundNumber(num){
-    return Math.round(num * 1000)/1000;
-}
-
 
 const add = (a, b) => a + b;
 const subtract = (a, b) => a - b;
 const multiply = (a, b) => a * b;
-const divide = (a, b) => {
-    if (b === 0) return "SYNTAX ERROR";
-    return a / b;
-}
+const divide = (a, b) => a / b;
+
