@@ -1,48 +1,90 @@
-let num1;
-let num2;
+let currentValue = '';
+let previousValue = '';
 let operator = '';
 
-
-const numKey = document.querySelectorAll(".num");
+const numbers = document.querySelectorAll(".num");
 const ops = document.querySelectorAll(".ops");
 const equals = document.getElementById("equals");
 const clear = document.getElementById("clear");
 const del = document.getElementById("delete");
 const period = document.getElementById("period");
 
-const prevDisplay = document.getElementById("prev");
+const previousDisplay = document.getElementById("prev");
 const currentDisplay = document.getElementById("current");
 
-clear.addEventListener('click', () => {
-    prevDisplay.textContent = '';
-    currentDisplay.textContent = '';
-    window.location.reload();
+clear.addEventListener('click', clearDisplay)
+equals.addEventListener('click', () => {
+    operate();
+    previousDisplay.textContent = '';
+    currentDisplay.textContent = previousValue;
 })
+numbers.forEach(btn => {
+    btn.addEventListener('click', (e) =>{
+        getOperand(e.target.textContent);
+        currentDisplay.textContent = currentValue;
+        //updateDisplay();
+    })
+})
+ops.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        selectOperator(e.target.textContent);
+        previousDisplay.textContent = `${previousValue} ${operator}`;
+        currentDisplay.textContent = currentValue;
+    })
+}) 
 
-numKey.forEach(btn => btn.addEventListener('click', populateDisplay)) 
-ops.forEach(btn => btn.addEventListener('click', populateDisplay)) 
-
-function populateDisplay(){
-    let x = this.value
+function updateDisplay(){
+    let x = this.innerText
     currentDisplay.textContent += x
+    
 }
 
+function selectOperator(op){
+    operator = op;
+    previousValue = currentValue;
+    currentValue = '';
+}
 
-function operate(a, b, op){
-    switch (op){
+function getOperand(num){
+    if (currentValue.length <= 14){
+        currentValue += num;
+    } 
+}
+
+function clearDisplay(){
+    currentValue = '';
+    previousValue = '';
+    operator = '';
+    previousDisplay.textContent = '';
+    currentDisplay.textContent = '';
+}
+
+function operate(){
+    previousValue = Number(previousValue);
+    currentValue = Number(currentValue);
+
+    switch (operator){
         case '+':
-            add(a, b);
+            previousValue = add(previousValue, currentValue);
             break;
         case '-':
-            subtract(a, b);
+            previousValue = subtract(previousValue, currentValue);
             break;
         case '×':
-            multiply(a, b);
+            previousValue = multiply(previousValue, currentValue);
             break;
         case '÷':
-            divide(a, b);
+            previousValue = divide(previousValue, currentValue);
             break;
     }
+
+    previousValue = roundNumber(previousValue);
+    previousValue = previousValue.toString();
+    currentValue = currentValue.toString();
+}
+
+function roundNumber(num){
+    return Math.round(num * 1000)/1000;
 }
 
 
