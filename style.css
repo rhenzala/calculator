@@ -1,24 +1,32 @@
-body,
+*,
+*::after,
+*::before{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #faebd7;
+    overflow-x: hidden;
+    padding: auto;
+    display: flex;
+    justify-content: center;
+}
+
 .display,
 .calculator{
     display: flex;
     flex-direction: column;
 }
-body{
-    font-family: 'Courier New', Courier, monospace;
-    background: url("assets/wooden-bg.jpg");
-    background-repeat: no-repeat;
-    background-size: auto;
-    align-items: center;
-}
 
 .calculator{
     background-color: #3f4744;
-    width: 25vw;
+    width: max(30vw, 350px);
     height: 70vh;
     padding: 16px 12px;
-    margin-top: 10vh;
-
+    margin-top: 10%;
     align-items: center;
     justify-content: space-around;
 
