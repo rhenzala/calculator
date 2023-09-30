@@ -2,15 +2,15 @@ let currentValue = '';
 let previousValue = '';
 let operator = null;
 
-const numbers = document.querySelectorAll(".num");
-const ops = document.querySelectorAll(".ops");
-const equals = document.getElementById("equals");
-const clear = document.getElementById("clear");
-const del = document.getElementById("delete");
-const period = document.getElementById("period");
+const numbers = document.querySelectorAll('.num');
+const ops = document.querySelectorAll('.ops');
+const equals = document.getElementById('equals');
+const clear = document.getElementById('clear');
+const del = document.getElementById('delete');
+const period = document.getElementById('period');
 
-const previousDisplay = document.getElementById("prev");
-const currentDisplay = document.getElementById("current");
+const previousDisplay = document.getElementById('prev');
+const currentDisplay = document.getElementById('current');
 
 clear.addEventListener('click', clearDisplay)
 del.addEventListener('click', deleteValue)
@@ -103,23 +103,23 @@ function operate(){
     currentValue = Number(currentValue);
 
     if (operator === '÷' && currentValue === 0) {
-        currentDisplay.textContent = "RETARD";
+        currentDisplay.textContent = 'ERROR';
         previousDisplay.textContent = '';
     }
 
     switch (operator){
         case '+':
-            previousValue = add(previousValue, currentValue);
+            previousValue = calculator.add(previousValue, currentValue);
             break;
         case '-':
-            previousValue = subtract(previousValue, currentValue);
+            previousValue = calculator.subtract(previousValue, currentValue);
             break;
         case '×':
-            previousValue = multiply(previousValue, currentValue);
+            previousValue = calculator.multiply(previousValue, currentValue);
             break;
         case '÷':
             if (currentValue === 0) return null;
-            else previousValue = divide(previousValue, currentValue);
+            else previousValue = calculator.divide(previousValue, currentValue);
             break;
         default:
             return null
@@ -130,9 +130,17 @@ function operate(){
     currentValue = currentValue.toString();
     displayResult();
 }
+const calculator = (() => {
+    const add = (a, b) => a + b;
+    const subtract = (a, b) => a - b;
+    const multiply = (a, b) => a * b;
+    const divide = (a, b) => a / b;
+    return {
+        add,
+        subtract,
+        multiply,
+        divide
+    }
+})();
 
-const add = (a, b) => a + b;
-const subtract = (a, b) => a - b;
-const multiply = (a, b) => a * b;
-const divide = (a, b) => a / b;
 
